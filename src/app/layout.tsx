@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
+import Navbar from "@/components/Navbar";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import ThemeProvider from "@/components/ThemeProvider";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -89,7 +90,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <MotionConfig reducedMotion="user">
           <ThemeProvider>
-            <SmoothScrollProvider>{children}</SmoothScrollProvider>
+            <SmoothScrollProvider>
+              <Navbar />
+              {children}
+            </SmoothScrollProvider>
           </ThemeProvider>
         </MotionConfig>
       </body>
