@@ -6,12 +6,9 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 };
 
-/**
- * Turbopack hands loader options across to Rust, so remark plugins have to be
- * named by module specifier rather than passed as functions — and the specifier
- * has to resolve on its own, which a project-relative path does not. Hence the
- * absolute path for the local plugin.
- */
+// Turbopack passes loader options to Rust, so remark plugins are named by
+// module specifier rather than passed as functions, and the specifier must
+// resolve on its own -- which a project-relative path does not.
 const remarkPostData = fileURLToPath(
   new URL("./src/lib/remark-post-data.ts", import.meta.url),
 );

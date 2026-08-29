@@ -1,7 +1,6 @@
 "use client";
 
 import Lenis from "lenis";
-// Ships the `lenis-stopped` overflow rule that makes stop() actually hold.
 import "lenis/dist/lenis.css";
 import {
   createContext,
@@ -13,9 +12,8 @@ import {
 } from "react";
 
 type SmoothScrollContextValue = {
-  /** Scroll to an element or selector, honouring its CSS `scroll-margin-top`. */
   scrollTo: (target: string | HTMLElement) => void;
-  /** Pause/resume wheel and touch scrolling, for modal-style overlays. */
+
   stop: () => void;
   start: () => void;
 };
@@ -49,12 +47,6 @@ export default function SmoothScrollProvider({
 }) {
   const lenisRef = useRef<Lenis | null>(null);
 
-  // Built once, via a lazy initialiser. Every function closes over `lenisRef`
-  // and nothing else, so the context value never changes identity and consumers
-  // are not re-rendered — or their effects re-run — just because this provider
-  // rendered again. `useState` rather than a ref because reading a ref during
-  // render is unsafe under concurrent rendering, and rather than `useMemo`
-  // because only lazy initial state is guaranteed to run exactly once.
   const [api] = useState<SmoothScrollContextValue>(() => ({
     scrollTo: (target) => {
       const element = resolveElement(target);
@@ -65,23 +57,16 @@ export default function SmoothScrollProvider({
       const lenis = lenisRef.current;
 
       if (!lenis) {
-        // No Lenis means reduced motion is on, so jump rather than glide.
-        // `scroll-margin-top` is applied by the browser here.
         element.scrollIntoView({ behavior: "auto", block: "start" });
         return;
       }
 
-      // Lenis positions the element at the very top and ignores scroll-margin,
-      // so feed it the element's own value. That keeps the offset defined once,
-      // in the section's `scroll-mt-*` class, instead of duplicating a pixel
-      // count here that would silently drift from the CSS.
       const scrollMargin =
         Number.parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
 
       lenis.scrollTo(element, { offset: -scrollMargin, duration: 1.2 });
     },
-    // Lenis drives scrolling from JS, so `overflow: hidden` on the body does
-    // not hold it. Overlays have to pause the instance itself.
+
     stop: () => lenisRef.current?.stop(),
     start: () => lenisRef.current?.start(),
   }));
@@ -98,9 +83,6 @@ export default function SmoothScrollProvider({
       lenisRef.current = null;
     };
 
-    // Smooth scrolling is a motion effect, so it is switched off entirely when
-    // the visitor asks for reduced motion rather than merely shortened. Bound
-    // to the media query so toggling the OS setting takes effect immediately.
     const sync = () => {
       if (media.matches) {
         destroy();

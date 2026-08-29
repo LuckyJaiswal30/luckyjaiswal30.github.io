@@ -9,8 +9,6 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Any slug outside generateStaticParams 404s rather than being rendered on
-// demand, since dynamicParams defaults to true.
 export const dynamicParams = false;
 
 export function generateStaticParams() {

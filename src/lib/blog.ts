@@ -14,7 +14,6 @@ export type PostWithContent = Post & {
 
 const BLOG_DIR = path.join(process.cwd(), "src", "content", "blog");
 
-/** All post slugs, one per `.mdx` file in src/content/blog. Auto-discovered. */
 export function getPostSlugs(): string[] {
   if (!fs.existsSync(BLOG_DIR)) {
     return [];
@@ -26,14 +25,6 @@ export function getPostSlugs(): string[] {
     .map((file) => file.replace(/\.mdx$/, ""));
 }
 
-/**
- * Frontmatter is hand-written, so it is untrusted whatever the type says — the
- * `*.mdx` module declaration types `metadata` as `unknown` for exactly this
- * reason. Fails the build naming the file and the field, rather than throwing
- * deep in a render or quietly shipping "Invalid Date".
- *
- * Exported so the rules can be tested directly, without a compiled MDX module.
- */
 export function validateMeta(slug: string, value: unknown): PostMeta {
   const where = `src/content/blog/${slug}.mdx`;
 
@@ -61,13 +52,12 @@ export function validateMeta(slug: string, value: unknown): PostMeta {
       `\`date\` must be an ISO calendar day like "2026-08-27", got ${JSON.stringify(date)}`,
     );
   }
-  // A rejected `getTime()` is not enough on its own: "2026-02-31" parses
-  // happily and silently becomes 3 March, which would publish a post under a
-  // date nobody wrote and sort it into the wrong place. Round-tripping the
-  // components is what actually catches an overflowed day.
+
   {
     const [year, month, day] = (date as string).split("-").map(Number);
     const parsed = new Date(Date.UTC(year, month - 1, day));
+    // A NaN check is not enough: "2026-02-31" parses happily and becomes
+    // 3 March. Round-tripping the components is what catches an overflowed day.
     const survivesRoundTrip =
       parsed.getUTCFullYear() === year &&
       parsed.getUTCMonth() === month - 1 &&
@@ -111,14 +101,6 @@ type PostModule = {
   readingTime: number;
 };
 
-/**
- * The template literal is deliberate: Turbopack resolves it into a context
- * module covering every `.mdx` file in that directory, which is what lets a
- * post be published by dropping a file in with nothing to register. The
- * compilation itself — including the remark plugin that produces `toc` and
- * `readingTime` — happens at build time and is cached by the bundler, so there
- * is no runtime compile step to memoise here.
- */
 async function importPost(slug: string): Promise<PostModule> {
   return (await import(`../content/blog/${slug}.mdx`)) as PostModule;
 }
@@ -143,11 +125,6 @@ export async function getPost(slug: string): Promise<PostWithContent | null> {
   return loadPost(slug);
 }
 
-/**
- * Drafts render under `next dev` only. This must also be enforced in the page:
- * omitting a slug from `generateStaticParams` does not make it unreachable
- * unless `dynamicParams` is off.
- */
 const draftsArePreviewable = process.env.NODE_ENV === "development";
 
 function loadAllPosts(): Promise<PostWithContent[]> {
@@ -158,15 +135,10 @@ function byNewestFirst(a: PostWithContent, b: PostWithContent) {
   return new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime();
 }
 
-/** Drop `Content`, which cannot cross the server/client boundary. */
 function toListItem({ slug, meta, readingTime, toc }: PostWithContent): Post {
   return { slug, meta, readingTime, toc };
 }
 
-/**
- * Published posts, newest first. Drafts are excluded in dev too, so listings
- * match what visitors get. Use `getPost` when you need the rendered component.
- */
 export async function getAllPosts(): Promise<Post[]> {
   const posts = await loadAllPosts();
   return posts
@@ -175,7 +147,6 @@ export async function getAllPosts(): Promise<Post[]> {
     .map(toListItem);
 }
 
-/** Slugs allowed a page: the published set, plus drafts while developing. */
 export async function getRoutableSlugs(): Promise<string[]> {
   const posts = await loadAllPosts();
   return posts
@@ -184,12 +155,10 @@ export async function getRoutableSlugs(): Promise<string[]> {
     .map((post) => post.slug);
 }
 
-/** Whether this post may be served in the current environment. */
 export function isRoutable(post: { meta: PostMeta }): boolean {
   return draftsArePreviewable || !post.meta.draft;
 }
 
-/** Unique, sorted tag list across all published posts. */
 export async function getAllTags(): Promise<string[]> {
   const posts = await getAllPosts();
   const tags = new Set<string>();

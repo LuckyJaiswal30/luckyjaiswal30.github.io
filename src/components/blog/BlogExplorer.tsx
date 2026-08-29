@@ -39,14 +39,10 @@ export default function BlogExplorer({
     );
   }
 
-  // No useMemo: the React Compiler memoises this, and over a handful of posts
-  // the filter is cheaper than the bookkeeping would be either way.
   const filtered = posts.filter((post) =>
     matches(post, query.trim().toLowerCase(), activeTag),
   );
 
-  // The featured post is pinned to the top, but only in the unfiltered view —
-  // once you are searching, rank by the search, not by a flag.
   const featured = posts.find((post) => post.meta.featured);
   const isDefaultView = !query && !activeTag;
   const list =

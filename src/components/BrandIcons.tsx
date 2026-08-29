@@ -1,18 +1,5 @@
 import type { SVGProps } from "react";
 
-/**
- * Brand marks, drawn here rather than imported.
- *
- * lucide-react 1.x removed its brand icons — they are trademarks rather than
- * interface icons, so they were never really its job. lucide is still used for
- * everything that *is* an interface icon (arrows, mail, search, sun/moon); this
- * file covers the three logos the footer needs, so the site does not depend on
- * a deprecated corner of an icon set that has already been cleared out once.
- *
- * Paths are the standard 24x24 brand glyphs and are filled, not stroked, so
- * they take their colour from `currentColor` like the lucide icons beside them.
- */
-
 type IconProps = SVGProps<SVGSVGElement>;
 
 function BrandIcon({ children, ...props }: IconProps) {

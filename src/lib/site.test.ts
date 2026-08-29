@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// siteUrl is resolved once at module load, so each case needs a fresh import
-// with the environment already in place.
 async function loadSiteUrl(env: Record<string, string | undefined>) {
   vi.resetModules();
   for (const [key, value] of Object.entries(env)) {

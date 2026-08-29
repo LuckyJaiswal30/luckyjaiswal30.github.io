@@ -70,8 +70,6 @@ describe("projects config", () => {
     }
   });
 
-  // An in-progress project renders a "Coming soon" cover instead of its
-  // screenshot, so pairing the two would silently hide the image.
   it("does not set an image on an in-progress project", () => {
     for (const p of projects) {
       if (p.status !== "In Progress") continue;
@@ -82,7 +80,6 @@ describe("projects config", () => {
     }
   });
 
-  // A live link is a promise that something is deployed and reachable.
   it("does not advertise a live link for unfinished work", () => {
     for (const p of projects) {
       if (p.status !== "In Progress") continue;

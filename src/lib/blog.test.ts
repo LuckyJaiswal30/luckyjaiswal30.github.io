@@ -9,7 +9,6 @@ const valid: PostMeta = {
   tags: ["Learning"],
 };
 
-/** The error a given frontmatter object produces, or null if it passes. */
 function reject(meta: unknown): string | null {
   try {
     validateMeta("a-post", meta);
@@ -64,7 +63,6 @@ describe("validateMeta", () => {
   });
 
   it("rejects a well-formed date that is not a real day", () => {
-    // Shaped like an ISO day, but there is no 31st of February.
     expect(reject({ ...valid, date: "2026-02-31" })).toContain("not a real date");
   });
 
@@ -94,9 +92,6 @@ describe("validateMeta", () => {
 });
 
 describe("draft routing policy", () => {
-  // `isRoutable` is what stops a draft being served. The listing filter is
-  // separate and stricter: drafts never appear in a listing, even in dev, so
-  // what you see linked is what a visitor gets.
   async function loadIsRoutable(nodeEnv: string) {
     vi.resetModules();
     vi.stubEnv("NODE_ENV", nodeEnv);

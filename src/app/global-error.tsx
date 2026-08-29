@@ -2,18 +2,6 @@
 
 import { useEffect } from "react";
 
-/**
- * Last resort: this replaces the root layout, so it renders its own <html> and
- * <body> and cannot rely on the theme provider, the font or the CSS variables
- * the layout normally sets up.
- *
- * Every style here is inlined for that reason. It could import globals.css and
- * use the tokens, but this boundary exists to catch the case where the app
- * failed to render at all, and adding a stylesheet dependency to the one page
- * that has to survive that is the wrong trade. It is deliberately dark rather
- * than theme-aware, since the theme class is set by a provider that is,
- * by definition, not running here.
- */
 export default function GlobalError({
   error,
   reset,

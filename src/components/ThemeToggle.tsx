@@ -3,21 +3,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-/**
- * Which icon and label apply is decided in CSS from the `.dark` class that
- * next-themes sets before first paint, not from React state. That keeps a real
- * button in the server-rendered markup — focusable and labelled on the first
- * frame — instead of the placeholder a mount gate leaves behind, and it cannot
- * produce a hydration mismatch because React never renders the difference.
- *
- * The two icons are stacked rather than swapped, so the change is a rotation
- * and cross-fade instead of a cut: `display` cannot be transitioned, but
- * opacity and transform can. The labels still use `hidden`, since a screen
- * reader has no use for a half-faded name.
- *
- * `resolvedTheme` is read only in the click handler, which runs after
- * hydration, so it is reliably defined there.
- */
 export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
 

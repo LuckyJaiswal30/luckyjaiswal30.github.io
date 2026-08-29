@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatDate, formatDateShort } from "@/lib/blog-utils";
 
-// The suite runs under America/Los_Angeles (see vitest.config.mts). Without
-// timeZone: "UTC" in the formatters, every assertion below renders the
-// previous day and fails.
 describe("date formatting", () => {
   it("renders the calendar day from the frontmatter, not the local one", () => {
     expect(formatDate("2026-08-27")).toBe("August 27, 2026");

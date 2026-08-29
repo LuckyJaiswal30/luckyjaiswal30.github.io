@@ -6,9 +6,6 @@ import { siteUrl } from "@/lib/site";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
 
-  // `lastModified` is omitted where it is not actually known. Setting it to the
-  // build time made every route claim it changed on every deploy, which is
-  // false and teaches crawlers to ignore the field.
   const newestPost = posts[0] ? new Date(posts[0].meta.date) : undefined;
 
   return [

@@ -21,9 +21,7 @@ export default function TableOfContents({ toc }: { toc: TocEntry[] }) {
           setActive(visible[0].target.id);
         }
       },
-      // Top margin clears the fixed nav; the large bottom margin means a
-      // heading counts as "current" only once it reaches the upper third,
-      // rather than the moment it appears at the bottom of the screen.
+
       { rootMargin: "-96px 0px -70% 0px", threshold: [0, 1] },
     );
 

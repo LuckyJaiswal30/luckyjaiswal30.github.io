@@ -12,7 +12,6 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-// `params` is a Promise in Next 16, in line with the other async request APIs.
 export default async function ProjectOpengraphImage({
   params,
 }: {

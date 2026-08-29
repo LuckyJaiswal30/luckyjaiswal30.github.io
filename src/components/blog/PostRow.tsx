@@ -11,11 +11,7 @@ export default function PostRow({
   post: Post;
   featured?: boolean;
   variant?: "full" | "compact";
-  /**
-   * The row cannot know what precedes it, so the page says. In the homepage
-   * preview it sits under that section's h2 and is an h3; on /blog it sits
-   * directly under the page h1 and must be an h2.
-   */
+
   headingLevel?: 2 | 3;
 }) {
   const compact = variant === "compact";

@@ -18,7 +18,6 @@ describe("serializeJsonLd", () => {
       description: "5 < 10 && 10 > 5",
     };
 
-    // The escape is a JSON escape, so parsing gives back the original value.
     expect(JSON.parse(serializeJsonLd(data))).toEqual(data);
   });
 

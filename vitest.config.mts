@@ -5,10 +5,10 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["src/**/*.test.ts"],
-    // Deliberately a timezone west of UTC. A post's date is a calendar day but
-    // parses as UTC midnight, so a formatter that forgets to pin its zone
-    // renders the previous day here. Running the suite under UTC would make
-    // that bug invisible, which is exactly how it shipped the first time.
+
+    // Deliberately west of UTC. A post's date is a calendar day that parses
+    // as UTC midnight, so a formatter missing timeZone: "UTC" renders the
+    // previous day here. Running the suite under UTC would hide that.
     env: { TZ: "America/Los_Angeles" },
   },
   resolve: {

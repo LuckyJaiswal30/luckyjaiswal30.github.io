@@ -14,16 +14,13 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-// `params` is a Promise in Next 16, in line with the other async request APIs.
 export default async function PostOpengraphImage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  // getPost rather than a find() over getAllPosts: that listing excludes
-  // drafts, so a draft previewed under `next dev` would silently fall back to
-  // the generic card while its page rendered the real title.
+
   const post = await getPost(slug);
   const usable = post && isRoutable(post) ? post : null;
 

@@ -11,21 +11,10 @@ import { pickActiveSection, type SectionRect } from "@/lib/active-section";
 type NavItem = {
   label: string;
   href: string;
-  /**
-   * The homepage section this entry corresponds to, for entries whose href is
-   * a route. Projects and Blog both have a full page *and* a homepage section:
-   * the link goes to the page, and this is what the scroll tracker watches so
-   * the entry still lights up as you pass the section.
-   */
+
   section?: string;
 };
 
-/**
- * Projects and Blog are routes, not anchors. Both have a real page listing
- * everything, and sending one to a page while the other only scrolled to a
- * teaser was an inconsistency you could feel: the same click did two different
- * things depending on which word you picked.
- */
 const navigation: NavItem[] = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
@@ -37,10 +26,6 @@ const navigation: NavItem[] = [
 
 const isAnchor = (item: NavItem) => item.href.startsWith("#");
 
-/**
- * Every nav entry that has something to track on the homepage, paired with the
- * selector to measure. Anchors track themselves; routes track their section.
- */
 const trackedSections: { href: string; selector: string }[] = navigation.flatMap(
   (item) => {
     const selector = isAnchor(item) ? item.href : item.section;
@@ -48,7 +33,6 @@ const trackedSections: { href: string; selector: string }[] = navigation.flatMap
   },
 );
 
-/** Which `navigation` entry a non-home route corresponds to. */
 function navHrefForPath(pathname: string): string {
   if (pathname.startsWith("/blog")) return "/blog";
   if (pathname.startsWith("/projects")) return "/projects";
@@ -71,8 +55,6 @@ export default function Navbar() {
 
   const activeHref = isHome ? scrolledHref : navHrefForPath(pathname);
 
-  // Track which section the reader is in. The measuring happens here; the
-  // choice itself lives in pickActiveSection, where it can be tested.
   useEffect(() => {
     if (!isHome) {
       return;
@@ -120,9 +102,6 @@ export default function Navbar() {
     };
   }, [isHome]);
 
-  // Homepage only: elsewhere a hash is a table-of-contents anchor the reader
-  // chose, and clearing it would break "copy link to this heading". Deferred a
-  // frame so the browser's own jump happens first.
   useEffect(() => {
     if (!isHome) {
       return;
@@ -148,16 +127,11 @@ export default function Navbar() {
     };
   }, [isHome]);
 
-  // Everything the open drawer owns: the scroll lock, Escape, and keeping focus
-  // inside it. A drawer that covers the page but leaves focus behind it is
-  // navigable only by sighted mouse users.
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    // Both are needed: `overflow` covers native scrolling, `stop()` covers
-    // Lenis, which scrolls from JS and ignores the CSS entirely.
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     stop();
@@ -220,9 +194,8 @@ export default function Navbar() {
     if (isAnchor(item) && isHome) {
       event.preventDefault();
       setScrolledHref(item.href);
-      // Resume first: the open drawer has Lenis stopped, and a stopped
-      // instance drops scrollTo silently. The effect cleanup calls start()
-      // again when the drawer unmounts, which is harmless.
+
+      // Resume first: a stopped Lenis drops scrollTo silently.
       start();
       scrollTo(item.href);
     }

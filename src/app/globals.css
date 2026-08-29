@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-/* next-themes sets `.dark` on <html>, so the `dark:` variant has to follow that
-   class rather than Tailwind 4's default prefers-color-scheme media query. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
@@ -50,10 +48,10 @@
   --glass-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
 }
 
-/* These belong in @layer base, not at the top level. Tailwind 4 puts its
-   utilities in @layer utilities, and an unlayered rule beats a layered one
-   whatever the specificity — so a bare `a { color: inherit }` silently
-   overrode every text-colour utility on every link on the site. */
+/* Must stay in @layer base. Tailwind puts its utilities in @layer utilities,
+   and an unlayered rule beats a layered one whatever the specificity, so a bare
+   `a { color: inherit }` out here silently overrides every text-colour utility
+   on every link on the site. */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -78,16 +76,10 @@
     outline-offset: 3px;
   }
 
-  /* The skip link focuses <main> so keyboard users land in the content. It is a
-     container, not a control, and the browser's default ring would draw around
-     the whole viewport, so the scroll and focus move are the feedback instead. */
   #main-content:focus {
     outline: none;
   }
 
-  /* Cross-fade the palette when the theme flips, so the switch reads as a
-     transition rather than a jump cut. In the base layer, so any component that
-     wants a different duration simply says so with a utility. */
   *,
   *::before,
   *::after {
@@ -115,27 +107,11 @@
   top: 1rem;
 }
 
-/* The inverted capsule pair, so selected text contrasts in both themes. It was
-   previously a hardcoded white tint with white text, which is invisible against
-   the light theme's background. Deliberately solid rather than a color-mix
-   tint: a tint needs a @supports fallback, and every fallback that keeps the
-   text colour readable over the tint is unreadable over the fallback colour. */
 ::selection {
   background: var(--capsule-bg);
   color: var(--capsule-fg);
 }
 
-/* Animates the `rotate` property rather than `transform`, so the spin cannot
-   clobber the translate used to centre the element. Reduced motion is handled
-   by the blanket rule below, which collapses every animation duration. */
-/* Frosted glass, using the recipe React Bits actually ships in its own navbar
-   rather than the displacement-map filter from its showcase component. That
-   filter is applied through `backdrop-filter: url(#…)`, which Chrome and Safari
-   largely do not support, and at pill size over a near-black page there is
-   nothing behind it to refract — it would cost a filter pass and show nothing.
-   What sells glass here is the edge treatment: a bright inset line along the
-   top, where a real pane catches light, a darker one along the bottom, and a
-   soft sheen falling away from the top. */
 .glass {
   position: relative;
   background: var(--glass-bg);
@@ -161,7 +137,6 @@
   );
 }
 
-/* Keeps content above the sheen. */
 .glass > * {
   position: relative;
 }

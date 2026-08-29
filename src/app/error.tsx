@@ -3,11 +3,6 @@
 import Link from "next/link";
 import { useEffect } from "react";
 
-/**
- * Catches render errors in any route below the root layout. The layout itself
- * still renders, so the nav and theme survive. `global-error.tsx` covers the
- * case where the layout is what broke.
- */
 export default function Error({
   error,
   reset,
@@ -16,8 +11,6 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Nothing is wired up to receive this yet, but a swallowed error is worse
-    // than a noisy one. Replace with a real reporter when there is one.
     console.error("Route error:", error);
   }, [error]);
 

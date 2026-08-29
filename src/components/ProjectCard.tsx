@@ -3,7 +3,6 @@ import Link from "next/link";
 import { GitHubIcon } from "@/components/BrandIcons";
 import type { Project } from "@/lib/projects";
 
-/** Stable per title, so a project's generated cover art never changes. */
 function hueFromTitle(title: string): number {
   const sum = [...title].reduce((total, char) => total + char.charCodeAt(0), 0);
   return sum % 360 || 200;
@@ -50,11 +49,7 @@ export default function ProjectCard({
   headingLevel = 3,
 }: {
   project: Project;
-  /**
-   * The card cannot know what precedes it, so the page says. On the homepage it
-   * sits under the section's h2 and is an h3; on /projects it sits directly
-   * under the page h1 and must be an h2, or the document skips a level.
-   */
+
   headingLevel?: 2 | 3;
 }) {
   const isInProgress = project.status === "In Progress";
@@ -70,9 +65,7 @@ export default function ProjectCard({
         {isInProgress ? (
           <ComingSoonCover />
         ) : project.image ? (
-          // A plain img rather than next/image: these are local, fixed-size
-          // cover shots in public/, so there is nothing for the optimiser to
-          // decide, and this keeps sharp out of the build.
+
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.image}
@@ -133,8 +126,7 @@ export default function ProjectCard({
           </span>
 
           {project.githubUrl ? (
-            // Sits above the stretched card link so it stays separately
-            // clickable rather than being swallowed by it.
+
             <a
               href={project.githubUrl}
               target="_blank"

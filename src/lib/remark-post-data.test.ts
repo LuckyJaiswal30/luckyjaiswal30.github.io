@@ -9,7 +9,6 @@ function parse(markdown: string): Root {
   return unified().use(remarkParse).parse(markdown) as Root;
 }
 
-/** Run the collector and return both its result and the ids it stamped. */
 function run(markdown: string) {
   const tree = parse(markdown);
   const data = collectPostData(tree);
@@ -59,7 +58,6 @@ describe("collectPostData: headings", () => {
   });
 
   it("stamps the same id onto the heading that it puts in the contents", () => {
-    // The whole point of doing both in one pass: these cannot disagree.
     const { toc, stampedIds } = run("## Same\n\n## Same\n\n### Other");
 
     expect(stampedIds).toEqual(toc.map((entry) => entry.id));
@@ -96,8 +94,6 @@ describe("collectPostData: reading time", () => {
     const prose = `${"word ".repeat(400)}`;
     const withCode = `${prose}\n\n\`\`\`js\n${"junk ".repeat(4000)}\n\`\`\`\n`;
 
-    // A regex over the raw source is defeated by fences in odd positions;
-    // skipping `code` nodes structurally is not.
     expect(run(withCode).readingTime).toBe(run(prose).readingTime);
   });
 

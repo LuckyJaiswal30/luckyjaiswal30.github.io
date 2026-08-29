@@ -15,9 +15,6 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-// Any slug outside generateStaticParams 404s instead of being rendered on
-// demand. Without this, excluding drafts from the static params would not stop
-// them being served, since dynamicParams defaults to true.
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
@@ -68,7 +65,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const allPosts = await getAllPosts();
   const index = allPosts.findIndex((item) => item.slug === slug);
-  // The list runs newest first, so the previous entry is the newer post.
+
   const newer = index > 0 ? allPosts[index - 1] : undefined;
   const older = index >= 0 ? allPosts[index + 1] : undefined;
 
@@ -177,7 +174,6 @@ function AdjacentPost({
   post: Post;
   direction: "newer" | "older";
 }) {
-  // Older goes left, newer goes right, so the pair reads along the timeline.
   const isOlder = direction === "older";
 
   return (

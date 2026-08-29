@@ -71,9 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className={inter.variable}
-      // Confirms the `scroll-behavior: smooth` in globals.css is deliberate, so
-      // Next scrolls instantly on route changes instead of animating the jump,
-      // while anchor clicks (table of contents, skip link) still glide.
+
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

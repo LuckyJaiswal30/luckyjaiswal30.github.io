@@ -13,12 +13,6 @@ function Heading({
   className: string;
   children?: ReactNode;
 } & ComponentPropsWithoutRef<"h2">) {
-  // `id` is stamped by the remark plugin, which built the table of contents in
-  // the same pass, so an anchor and its TOC link always agree — including the
-  // numeric suffix on repeated headings. A heading the plugin did not stamp
-  // (it skips empty ones) is deliberately left unlinked rather than given an id
-  // invented here: a second implementation is exactly how the two drift apart,
-  // and an anchor the contents list does not know about helps nobody.
   if (!id) {
     return <Tag className={className} {...props}>{children}</Tag>;
   }
@@ -103,9 +97,6 @@ const components: MDXComponents = {
     />
   ),
   code: ({ className, ...props }: ComponentPropsWithoutRef<"code">) => {
-    // Fenced code blocks arrive as <pre><code class="language-xxx">. Only style
-    // bare inline `code`; a block's own <pre> handles its look, so styling this
-    // too would double up the border, background and padding.
     if (typeof className === "string" && className.startsWith("language-")) {
       return <code className={className} {...props} />;
     }
@@ -119,8 +110,7 @@ const components: MDXComponents = {
   },
   pre: (props: ComponentPropsWithoutRef<"pre">) => (
     <pre
-      // tabIndex makes an overflowing block reachable by keyboard, so it can be
-      // scrolled without a pointer.
+
       tabIndex={0}
       className="my-7 overflow-x-auto rounded-2xl border p-5 font-mono text-[0.85rem] leading-relaxed text-[color:var(--foreground)] border-[color:var(--border)] bg-[color:var(--surface-strong)]"
       {...props}
@@ -145,10 +135,6 @@ const components: MDXComponents = {
   ),
 };
 
-/**
- * The name is the `mdx-components` file convention's, not a choice: @next/mdx
- * looks this export up by name to style MDX rendered anywhere in the app.
- */
 export function useMDXComponents(existing: MDXComponents = {}): MDXComponents {
   return { ...existing, ...components };
 }

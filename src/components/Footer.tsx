@@ -6,20 +6,6 @@ import {
 } from "@/components/BrandIcons";
 import { contactEmail, socialUrls } from "@/lib/site";
 
-/**
- * A server component, deliberately.
- *
- * The old footer was a client component for two reasons, and neither needed to
- * be: the hover tooltip was React state, and the copyright year was computed
- * during render. The year is the interesting one — evaluating `new Date()` on
- * the client meant a page built in December and read in January rendered one
- * year on the server and another at hydration. Rendering it on the server is
- * both correct and the only place the answer is stable.
- *
- * The tooltip is now hover/focus state in CSS, which the browser has always
- * been able to do, so this ships no JavaScript at all.
- */
-
 const socialLinks = [
   { label: "GitHub", href: socialUrls.github, Icon: GitHubIcon },
   { label: "LinkedIn", href: socialUrls.linkedin, Icon: LinkedInIcon },
