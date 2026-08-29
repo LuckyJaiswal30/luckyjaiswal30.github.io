@@ -1,0 +1,96 @@
+export const metadata = {
+  title: "Everyone Can Build an AI App Now. Almost Nobody Can Run One.",
+  description:
+    "Wrapping a model API takes an afternoon. Everything after that is the actual engineering, and nobody writes tutorials about it.",
+  date: "2026-08-27",
+  tags: ["AI", "Engineering", "Reflection"],
+  featured: true,
+};
+
+I want to start by admitting something that undercuts my own post a little. Building an app that talks to a language model is genuinely easy now. Not "easy once you understand it" easy. Actually easy. You get an API key, you write maybe forty lines, you send text in and you get text back, and by the end of an afternoon you have something on screen that answers questions and looks impressive to anyone watching over your shoulder.
+
+That's real. I'm not going to pretend otherwise to make my own work sound harder than it was. But almost every tutorial I've read ends right there, at the exact moment the interesting problems start. You get shown how to make the thing respond. You don't get shown what to do when it responds confidently and wrongly, or when it answers something it never should have touched, or when one user pastes an entire chapter of a textbook into it and your bill quietly triples.
+
+I've been building a study chatbot for college students. Nothing groundbreaking. You ask it an academic question and it explains the concept back to you in a way that's actually meant to help you learn rather than just hand you an answer. Simple idea. And every genuinely hard thing about it turned out to be a thing I didn't know existed when I started.
+
+## The first real question is what your app refuses to do
+
+I thought the hard part would be making it answer well. It wasn't. The hard part was deciding what it shouldn't answer at all.
+
+My chatbot is supposed to stay academic. That sounded like a single sentence in a system prompt when I wrote it down. Then I actually sat with the question of what "academic" means and it fell apart in my hands almost immediately.
+
+Is "how do I stop panicking before an exam" academic? It's not a subject question. It's also probably the most useful thing a study app could help a student with, and turning it away feels wrong in a way I couldn't argue against. Is a coding question academic? Depends entirely on whether it's a lab assignment or a personal project, and the question text usually looks identical either way. What about someone asking me to just write their essay? That's clearly academic in topic and clearly not what the app is for.
+
+None of that is a technical problem. It's a product problem wearing a technical costume, and I had to actually decide what I believed before I could write any code at all. That was the first thing nobody warned me about.
+
+## Why a system prompt wasn't enough
+
+My first attempt was the obvious one. Put the rules in the system prompt, tell the model to politely decline anything off topic, ship it.
+
+It sort of worked, which is worse than it not working. It held up fine on the questions I thought of while testing, and it drifted on the ones I didn't. Sometimes it would refuse something perfectly reasonable because the phrasing sounded casual. Sometimes it would happily wander off into a conversation that had nothing to do with studying, because the user had been chatting with it for a while and the earlier instructions had gotten buried under everything since.
+
+That's the thing about instructions living inside a conversation. They're competing with everything else in that conversation for the model's attention, and as the conversation gets longer they lose ground. It's not that the model ignores you. It's that you gave it a rule at the start and then handed it two thousand words of context that pull in a different direction.
+
+So I split it. There's now a fast, cheap model whose only job is to look at an incoming question and decide whether it's in scope. It doesn't answer anything. It doesn't need to be smart. It needs to be quick and consistent. If it passes, the question goes to a second, more capable model that does the actual tutoring.
+
+The reason that works better isn't magic. It's that the classifier sees a clean, short input with one job, every single time, with no conversation history dragging it sideways. It can't get talked out of its own instructions because there's nothing there to talk it out of them.
+
+## What happens when the classifier gets it wrong
+
+Here's the part I find genuinely interesting, and the part I never see discussed.
+
+The classifier will be wrong. Not might be. Will be. So the real question isn't how to make it perfect, it's which direction you want it to fail in, because the two failure modes are not remotely equal.
+
+If it wrongly rejects a legitimate question, a student with a real doubt gets turned away by a tool that's supposed to help them. That's annoying, it's visible, and it makes the app feel broken and slightly stupid. But the student knows it happened. They can rephrase and try again.
+
+If it wrongly accepts something out of scope, my study tool is now confidently answering something it was never built to handle. And crucially, nobody notices. The student gets an answer. It looks like every other answer. There's no error, no warning, nothing in my logs that looks different from a successful request.
+
+So one failure is loud and recoverable, and the other is silent and isn't. Once I framed it that way, the decision made itself: tune toward being slightly too strict, and put real effort into making the rejection message helpful instead of a blank wall. A student who gets told "I'm built for academic questions, try asking me about the concept behind this" can course correct in five seconds. A student who gets a confident wrong answer from a tool they trusted has no idea anything went wrong at all.
+
+That's not a clever trick. It's just deciding, on purpose, which kind of wrong you're willing to be. I don't think I'd have thought about it at all if I hadn't been forced to build the classifier separately, which is maybe the real argument for splitting it.
+
+## Two models means two things that can break
+
+Splitting it bought me a lot. It also cost me things I didn't account for.
+
+Every request now makes two network calls instead of one, and they're sequential, because the second one can't start until the first one decides. That latency stacks. On a good day it's barely noticeable. On a bad day, when one provider is slow, the user is sitting there watching a loading state for a question that should have been instant.
+
+I also now have two providers, which means two sets of rate limits, two ways for an outage to take down my app, and two things to keep an eye on. If the classifier goes down, nothing works, even though the part that does the actual valuable work is completely fine. I built a dependency that can take out a healthy system.
+
+Would a single model call have been simpler? Yes, obviously. Would it have been better? I don't think so, because the scope problem was the actual product risk and this is the thing that solved it. But I want to be honest that "better architecture" here meant accepting a specific, real set of new problems in exchange for getting rid of a worse one. That's what the tradeoff actually was. Nobody handed me a free win.
+
+## The failure mode that has no error message
+
+This is the one that keeps bothering me.
+
+When normal code breaks, it tells you. Something throws, something returns a 500, something shows up red in your logs. You find out, usually fast, and often before a user does.
+
+When an AI feature breaks, everything looks perfect. The request succeeds. The response comes back well formatted and confident and grammatically flawless. Your monitoring is completely green. The only thing wrong is that the explanation is subtly incorrect, and the only person who could possibly know is a student who came to the app precisely because they didn't understand the topic yet.
+
+Think about what that means for a second. My entire safety net for correctness is a user who, by definition, is not in a position to catch the error. That's a genuinely uncomfortable thing to have built.
+
+I don't have this solved. I want to be clear about that, because I think a lot of writing about AI engineering pretends to certainty that doesn't exist yet. What I've started doing is small: making it easy for someone to flag an answer as unhelpful, keeping enough of a record that I can go back and look at what actually got sent when something is reported, and being much more careful about how confident the app sounds when it's on shakier ground. None of that catches the problem. It just makes it slightly less invisible.
+
+The thing I keep coming back to is that this isn't a bug you fix once. It's a permanent property of the kind of system I chose to build. I traded deterministic, checkable behavior for flexibility, and the price of that trade is that "is it working" stopped being a question with a yes or no answer.
+
+## The costs nobody puts in the tutorial
+
+A few practical things that only showed up under real use.
+
+Someone will paste enormous amounts of text into your app. Not maliciously. They'll paste a whole chapter because they want it explained, which is a completely reasonable thing to want. That single request can cost many times what a normal one does, and if you didn't think about it in advance, you find out through your billing page rather than your code.
+
+Rate limits behave nothing like they do when you're testing alone. Everything is comfortable at one request at a time. Thirty students during exam week is a different system with different behavior, and you don't discover the difference gradually. You discover it all at once, at the worst possible moment.
+
+And the cost of being helpful is not fixed. A longer, more thorough explanation is a better product and a more expensive request. Every quality improvement I make has a number attached to it. I've never had to think that way about a feature before. Normally making something better just costs you time.
+
+## Why I think this scales up unchanged
+
+The reason I wanted to write this down is that I keep reading about large companies struggling with what sounds like exactly this, just with more zeros on the end.
+
+The pattern reads the same at every size. Building the AI feature is the fast part, and everyone gets there. Running it, knowing whether it's actually working, knowing what it costs, knowing when it's quietly wrong, that's the part that separates a demo from a product. The demo is a weekend. The rest is the job.
+
+I find that oddly reassuring, honestly. It means the problems I'm hitting as a student with one small chatbot aren't beginner problems that I'll grow out of. They're the actual problems, in a smaller container. The people solving them at scale aren't solving different problems than me. They just have more users making the consequences louder.
+
+So no, I don't think building an AI app is impressive anymore, including mine. The API is right there. Anyone can do it, and that's a good thing.
+
+What I think is actually hard, and what I'm still very much in the middle of learning, is running one honestly. Knowing where it fails. Knowing what it costs. Knowing what it shouldn't touch and being willing to make it slightly less impressive in order to keep that line. That part hasn't gotten easier at all, and I don't think it's going to.
