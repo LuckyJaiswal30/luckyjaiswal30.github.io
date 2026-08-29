@@ -1,23 +1,50 @@
-const sections = [
-  { id: "home", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "skills", label: "Skills" },
-  { id: "projects", label: "Projects" },
-  { id: "contact", label: "Contact" },
-];
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import Projects from "@/components/Projects";
+import Skills from "@/components/Skills";
 
 export default function HomePage() {
   return (
-    <main id="main-content" tabIndex={-1}>
-      {sections.map((section) => (
-        <section
-          key={section.id}
-          id={section.id}
-          className="flex min-h-screen scroll-mt-24 items-center justify-center px-6"
-        >
-          <h2 className="text-4xl font-semibold">{section.label}</h2>
-        </section>
-      ))}
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="relative overflow-x-clip bg-[color:var(--background)]"
+    >
+      {/* Ambient background wash. Fixed, so it stays put while the page moves
+          over it, and inert so it never intercepts a click. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-10"
+      >
+        <div
+          className="absolute left-[-8rem] top-[-6rem] h-80 w-80 rounded-full blur-[140px]"
+          style={{ background: "var(--glow)" }}
+        />
+        <div
+          className="absolute right-[-10rem] top-[20%] h-[28rem] w-[28rem] rounded-full blur-[180px]"
+          style={{ background: "var(--glow-accent)" }}
+        />
+        <div
+          className="absolute bottom-[-8rem] left-[18%] h-72 w-72 rounded-full blur-[150px]"
+          style={{ background: "var(--glow)" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at top, var(--glow-overlay), transparent 35%)",
+          }}
+        />
+      </div>
+
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Contact />
+      <Footer />
     </main>
   );
 }
