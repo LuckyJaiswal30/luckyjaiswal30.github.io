@@ -1,1 +1,101 @@
 @import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  color-scheme: light;
+  --background: #f5f5f4;
+  --foreground: #111827;
+  --capsule-bg: #000000;
+  --capsule-fg: #ffffff;
+  --muted: #4b5563;
+  --muted-soft: #69707d;
+  --border: rgba(17, 24, 39, 0.12);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-strong: rgba(255, 255, 255, 0.92);
+  --glow: rgba(15, 23, 42, 0.08);
+  --glow-accent: rgba(8, 145, 178, 0.08);
+  --glow-overlay: rgba(15, 23, 42, 0.09);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --capsule-bg: #ffffff;
+  --capsule-fg: #000000;
+  --muted: #a3a3a3;
+  --muted-soft: #7a7a7a;
+  --border: rgba(255, 255, 255, 0.12);
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --glow: rgba(255, 255, 255, 0.08);
+  --glow-accent: rgba(103, 232, 249, 0.08);
+  --glow-overlay: rgba(255, 255, 255, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+}
+
+/* The skip link focuses <main> so keyboard users land in the content. It is a
+   container, not a control, and the browser's default ring would draw around
+   the whole viewport, so the scroll and focus move are the feedback instead. */
+#main-content:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  border-radius: 9999px;
+  background: var(--capsule-bg);
+  color: var(--capsule-fg);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* Derived from the theme rather than hardcoded. A fixed white-on-white pair
+   leaves selected text invisible in light mode. */
+::selection {
+  background: color-mix(in srgb, var(--foreground) 18%, transparent);
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-ping {
+    animation: none;
+  }
+}
