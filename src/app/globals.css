@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* next-themes sets `.dark` on <html>, so the `dark:` variant has to follow that
+   class rather than Tailwind 4's default prefers-color-scheme media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-sans: var(--font-inter);
 }
@@ -83,11 +87,14 @@ input:focus-visible {
   top: 1rem;
 }
 
-/* Derived from the theme rather than hardcoded. A fixed white-on-white pair
-   leaves selected text invisible in light mode. */
+/* The inverted capsule pair, so selected text contrasts in both themes. It was
+   previously a hardcoded white tint with white text, which is invisible against
+   the light theme's background. Deliberately solid rather than a color-mix
+   tint: a tint needs a @supports fallback, and every fallback that keeps the
+   text colour readable over the tint is unreadable over the fallback colour. */
 ::selection {
-  background: color-mix(in srgb, var(--foreground) 18%, transparent);
-  color: var(--foreground);
+  background: var(--capsule-bg);
+  color: var(--capsule-fg);
 }
 
 @media (prefers-reduced-motion: reduce) {

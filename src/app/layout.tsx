@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import ThemeProvider from "@/components/ThemeProvider";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { siteDescription, siteName, siteUrl, socialUrls } from "@/lib/site";
 import "./globals.css";
@@ -84,7 +87,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <MotionConfig reducedMotion="user">
+          <ThemeProvider>
+            <SmoothScrollProvider>{children}</SmoothScrollProvider>
+          </ThemeProvider>
+        </MotionConfig>
       </body>
     </html>
   );
