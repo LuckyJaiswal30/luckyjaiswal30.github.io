@@ -146,3 +146,7 @@ Deployed on [Vercel](https://vercel.com) at [imlucky.dev](https://imlucky.dev); 
 - Email: [luckyjaiswal3405@gmail.com](mailto:luckyjaiswal3405@gmail.com)
 - GitHub: [@LuckyJaiswal30](https://github.com/LuckyJaiswal30)
 - LinkedIn: [luckyjaiswaldev](https://www.linkedin.com/in/luckyjaiswaldev/)
+
+## Credits
+
+This README was written with help from [Claude](https://claude.ai) by Anthropic.
