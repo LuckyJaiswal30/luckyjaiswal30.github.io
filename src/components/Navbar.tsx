@@ -236,7 +236,7 @@ export default function Navbar() {
         <div className="hidden md:flex md:w-full md:justify-center">
           <nav
             aria-label="Primary"
-            className="pointer-events-auto flex items-center gap-2 rounded-full border px-3 py-2 backdrop-blur-xl border-[color:var(--border)] bg-[color:var(--surface)]"
+            className="glass pointer-events-auto flex items-center gap-2 rounded-full px-3 py-2"
           >
             {navigation.map((item) => (
               <Link
@@ -263,7 +263,7 @@ export default function Navbar() {
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
             onClick={() => setIsOpen((open) => !open)}
-            className="pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-300 border-[color:var(--border)] bg-[color:var(--surface)]"
+            className="glass pointer-events-auto inline-flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300"
           >
             <span className="sr-only">
               {isOpen ? "Close navigation" : "Open navigation"}
