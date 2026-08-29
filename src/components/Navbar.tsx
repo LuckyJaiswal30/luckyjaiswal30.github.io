@@ -8,29 +8,50 @@ import { useSmoothScroll } from "@/components/SmoothScrollProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import { pickActiveSection, type SectionRect } from "@/lib/active-section";
 
+type NavItem = {
+  label: string;
+  href: string;
+  /**
+   * The homepage section this entry corresponds to, for entries whose href is
+   * a route. Projects and Blog both have a full page *and* a homepage section:
+   * the link goes to the page, and this is what the scroll tracker watches so
+   * the entry still lights up as you pass the section.
+   */
+  section?: string;
+};
+
 /**
- * A `#` href is a section on the homepage; anything else is a route. The kind
- * is derived rather than stored, so an entry cannot be mislabelled.
+ * Projects and Blog are routes, not anchors. Both have a real page listing
+ * everything, and sending one to a page while the other only scrolled to a
+ * teaser was an inconsistency you could feel: the same click did two different
+ * things depending on which word you picked.
  */
-const navigation = [
+const navigation: NavItem[] = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Blog", href: "/blog" },
+  { label: "Projects", href: "/projects", section: "#projects" },
+  { label: "Blog", href: "/blog", section: "#blog-preview" },
   { label: "Contact", href: "#contact" },
-] as const;
-
-type NavItem = (typeof navigation)[number];
+];
 
 const isAnchor = (item: NavItem) => item.href.startsWith("#");
 
-const anchorNavigation = navigation.filter(isAnchor);
+/**
+ * Every nav entry that has something to track on the homepage, paired with the
+ * selector to measure. Anchors track themselves; routes track their section.
+ */
+const trackedSections: { href: string; selector: string }[] = navigation.flatMap(
+  (item) => {
+    const selector = isAnchor(item) ? item.href : item.section;
+    return selector ? [{ href: item.href, selector }] : [];
+  },
+);
 
 /** Which `navigation` entry a non-home route corresponds to. */
 function navHrefForPath(pathname: string): string {
   if (pathname.startsWith("/blog")) return "/blog";
-  if (pathname.startsWith("/projects")) return "#projects";
+  if (pathname.startsWith("/projects")) return "/projects";
   return "";
 }
 
@@ -57,10 +78,10 @@ export default function Navbar() {
       return;
     }
 
-    const elements = anchorNavigation
-      .map((item) => {
-        const element = document.querySelector<HTMLElement>(item.href);
-        return element ? { href: item.href, element } : null;
+    const elements = trackedSections
+      .map(({ href, selector }) => {
+        const element = document.querySelector<HTMLElement>(selector);
+        return element ? { href, element } : null;
       })
       .filter((entry) => entry !== null);
 

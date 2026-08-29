@@ -109,6 +109,7 @@ export default function BlogExplorer({
                 key={post.slug}
                 post={post}
                 featured={isDefaultView && post === featured}
+                headingLevel={2}
               />
             ))}
           </div>

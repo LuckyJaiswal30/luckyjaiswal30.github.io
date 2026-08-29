@@ -6,12 +6,20 @@ export default function PostRow({
   post,
   featured = false,
   variant = "full",
+  headingLevel = 3,
 }: {
   post: Post;
   featured?: boolean;
   variant?: "full" | "compact";
+  /**
+   * The row cannot know what precedes it, so the page says. In the homepage
+   * preview it sits under that section's h2 and is an h3; on /blog it sits
+   * directly under the page h1 and must be an h2.
+   */
+  headingLevel?: 2 | 3;
 }) {
   const compact = variant === "compact";
+  const Heading = `h${headingLevel}` as const;
 
   return (
     <Link
@@ -67,7 +75,7 @@ export default function PostRow({
         </div>
 
         <div className="min-w-0">
-          <h3
+          <Heading
             className={`max-w-3xl font-semibold tracking-[-0.03em] text-[color:var(--foreground)] transition-opacity duration-300 group-hover:opacity-70 ${
               compact
                 ? "text-lg leading-snug sm:text-xl"
@@ -75,7 +83,7 @@ export default function PostRow({
             }`}
           >
             {post.meta.title}
-          </h3>
+          </Heading>
 
           {compact ? null : (
             <>

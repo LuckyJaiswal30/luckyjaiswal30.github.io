@@ -24,7 +24,7 @@ function CoverFallback({ title }: { title: string }) {
       />
       <span
         aria-hidden="true"
-        className="absolute bottom-3 left-5 select-none text-[5.5rem] font-semibold leading-none tracking-[-0.08em] transition-transform duration-500 group-hover:-translate-y-0.5"
+        className="absolute bottom-3 left-5 select-none text-[5.5rem] font-semibold leading-none tracking-[-0.08em] transition-transform duration-500 group-hover:-translate-y-0.5 motion-reduce:group-hover:translate-y-0"
         style={{
           color: "color-mix(in srgb, var(--foreground) 11%, transparent)",
         }}
@@ -45,8 +45,20 @@ function ComingSoonCover() {
   );
 }
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({
+  project,
+  headingLevel = 3,
+}: {
+  project: Project;
+  /**
+   * The card cannot know what precedes it, so the page says. On the homepage it
+   * sits under the section's h2 and is an h3; on /projects it sits directly
+   * under the page h1 and must be an h2, or the document skips a level.
+   */
+  headingLevel?: 2 | 3;
+}) {
   const isInProgress = project.status === "In Progress";
+  const Heading = `h${headingLevel}` as const;
 
   return (
     <article
@@ -81,14 +93,14 @@ export default function ProjectCard({ project }: { project: Project }) {
           {project.year}
         </p>
 
-        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[color:var(--foreground)]">
+        <Heading className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[color:var(--foreground)]">
           {/* The link is stretched over the whole card by the absolute span,
               so the title stays the accessible name for the whole target. */}
           <Link href={`/projects/${project.slug}`} className="static">
             <span className="absolute inset-0" />
             {project.title}
           </Link>
-        </h3>
+        </Heading>
 
         <p className="mt-2.5 text-[0.95rem] leading-relaxed text-[color:var(--muted)]">
           {project.description}

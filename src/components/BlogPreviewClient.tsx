@@ -36,7 +36,7 @@ export default function BlogPreviewClient({ posts }: { posts: Post[] }) {
         </div>
         <Link
           href="/blog"
-          className="group inline-flex shrink-0 items-center gap-2 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted)] transition-colors duration-300 hover:text-[color:var(--foreground)]"
+          className="group -my-2 inline-flex shrink-0 items-center gap-2 py-2 text-sm font-medium uppercase tracking-[0.22em] text-[color:var(--muted)] transition-colors duration-300 hover:text-[color:var(--foreground)]"
         >
           Read the Blog
           <ArrowRight

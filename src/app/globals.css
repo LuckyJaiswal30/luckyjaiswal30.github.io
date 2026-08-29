@@ -40,34 +40,52 @@
   --glow-overlay: rgba(255, 255, 255, 0.08);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* These belong in @layer base, not at the top level. Tailwind 4 puts its
+   utilities in @layer utilities, and an unlayered rule beats a layered one
+   whatever the specificity — so a bare `a { color: inherit }` silently
+   overrode every text-colour utility on every link on the site. */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  min-height: 100vh;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), sans-serif;
-  text-rendering: optimizeLegibility;
-}
+  body {
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter), sans-serif;
+    text-rendering: optimizeLegibility;
+  }
 
-a {
-  color: inherit;
-}
+  a {
+    color: inherit;
+  }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 3px;
-}
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 3px;
+  }
 
-/* The skip link focuses <main> so keyboard users land in the content. It is a
-   container, not a control, and the browser's default ring would draw around
-   the whole viewport, so the scroll and focus move are the feedback instead. */
-#main-content:focus {
-  outline: none;
+  /* The skip link focuses <main> so keyboard users land in the content. It is a
+     container, not a control, and the browser's default ring would draw around
+     the whole viewport, so the scroll and focus move are the feedback instead. */
+  #main-content:focus {
+    outline: none;
+  }
+
+  /* Cross-fade the palette when the theme flips, so the switch reads as a
+     transition rather than a jump cut. In the base layer, so any component that
+     wants a different duration simply says so with a utility. */
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color, outline-color,
+      fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
 .skip-link {
@@ -104,5 +122,13 @@ input:focus-visible {
 
   .animate-ping {
     animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

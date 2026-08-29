@@ -3,24 +3,24 @@ import BackLink from "@/components/BackLink";
 import BlogExplorer from "@/components/blog/BlogExplorer";
 import Footer from "@/components/Footer";
 import { getAllPosts, getAllTags } from "@/lib/blog";
+import { blogIndexCopy } from "@/lib/page-copy";
 import { siteName, siteUrl } from "@/lib/site";
 
-const description =
-  "Bugs I've chased, things I've learned, and whatever else felt worth writing down.";
+const { metaTitle, heading, description } = blogIndexCopy;
 
 export const metadata: Metadata = {
-  title: "Blog",
+  title: metaTitle,
   description,
   alternates: { canonical: "/blog" },
   openGraph: {
     type: "website",
-    title: `Blog · ${siteName}`,
+    title: `${metaTitle} · ${siteName}`,
     description,
     url: `${siteUrl}/blog`,
   },
   twitter: {
     card: "summary_large_image",
-    title: `Blog · ${siteName}`,
+    title: `${metaTitle} · ${siteName}`,
     description,
   },
 };
@@ -39,11 +39,10 @@ export default async function BlogIndexPage() {
           <BackLink href="/" label="Home" />
 
           <h1 className="mt-6 max-w-2xl text-4xl font-semibold tracking-[-0.05em] text-[color:var(--foreground)] sm:text-5xl">
-            Blog
+            {heading}
           </h1>
           <p className="mt-4 max-w-xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-            Bugs I&apos;ve chased, things I&apos;ve learned, and whatever else
-            felt worth writing down.
+            {description}
           </p>
 
           <div className="mt-16">
