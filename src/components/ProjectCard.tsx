@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { GitHubIcon } from "@/components/BrandIcons";
 import type { Project } from "@/lib/projects";
@@ -65,7 +65,6 @@ export default function ProjectCard({
         {isInProgress ? (
           <ComingSoonCover />
         ) : project.image ? (
-
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.image}
@@ -125,18 +124,34 @@ export default function ProjectCard({
             />
           </span>
 
-          {project.githubUrl ? (
+          <div className="ml-auto flex items-center gap-1">
+            {project.liveUrl ? (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${project.title} (opens in a new tab)`}
+                className="relative z-10 inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--surface-strong)] hover:text-[color:var(--foreground)]"
+              >
+                <ExternalLink
+                  aria-hidden="true"
+                  className="h-[1.05rem] w-[1.05rem]"
+                />
+              </a>
+            ) : null}
 
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${project.title} on GitHub`}
-              className="relative z-10 ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--surface-strong)] hover:text-[color:var(--foreground)]"
-            >
-              <GitHubIcon className="h-[1.1rem] w-[1.1rem]" />
-            </a>
-          ) : null}
+            {project.githubUrl ? (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.title} on GitHub (opens in a new tab)`}
+                className="relative z-10 inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--muted)] transition-colors duration-300 hover:bg-[color:var(--surface-strong)] hover:text-[color:var(--foreground)]"
+              >
+                <GitHubIcon className="h-[1.1rem] w-[1.1rem]" />
+              </a>
+            ) : null}
+          </div>
         </div>
       </div>
     </article>

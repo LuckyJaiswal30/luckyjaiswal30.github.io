@@ -18,15 +18,16 @@ export const projects: Project[] = [
     slug: "resumefit",
     title: "ResumeFit",
     description:
-      "I got tired of applying for internships and hearing nothing back. You paste in your resume and a job posting, and it tells you how well they actually match, which words you're missing, and which bullet points aren't saying anything.",
+      "I got tired of applying and hearing nothing back. Most checkers match keywords, so listing \"Kubernetes\" means you match Kubernetes. Mine won't count a requirement unless it can quote the line in your resume that proves it.",
     longDescription:
-      "I started this after sending out a pile of internship applications and hearing nothing back. You never find out why, which is the part that gets to you. Then I read that most resumes get filtered by software before a person ever opens them, and that the software is mostly looking for specific words in a specific shape. So the idea is simple: paste in your resume and the job description, get back a match score, the words the posting keeps using that your resume never says, and rewrites for the bullet points that describe duties instead of results. Getting a model to produce suggestions took an evening, and that was never the hard part. The hard part, which I'm still on, is making the score mean the same thing twice. Ask it the same question and you get a different number back, and a score you can't trust is worse than no score. The other thing I keep coming back to is stopping it from making things up. It will happily write you a bullet about leading a team you were never on, and a resume tool that quietly lies for you is worse than nothing.",
+      "I started this after sending out a pile of applications and hearing nothing back, because you never find out why. The first version matched keywords like everything else does, and it was useless: it told me I matched Kubernetes because the word sat in a skills list. So I rewrote it around one rule, that a requirement only counts if the analysis can quote the sentence in your experience that demonstrates it. Everything else followed from that. Missing and unproven are shown separately, because a requirement you never mentioned needs experience you might not have, while one you listed but never demonstrated just needs a sentence. Bullet rewrites that introduce a number your original never had get thrown out before you see them, since a tool that quietly invents a percentage for you is worse than no tool. And when the model call fails, the page says so instead of passing a keyword match off as a considered read. Most of my time now goes on staying inside a free tier: results are cached by hash, there is a ceiling shared across everyone, and running out falls back to keyword matching rather than erroring.",
     year: "2026 — ongoing",
-
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
-    status: "In Progress",
-
-    githubUrl: "https://github.com/LuckyJaiswal30",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Gemini", "Zod"],
+    status: "Completed",
+    highlight:
+      "On one run the model claimed Next.js, Jest and Figma as covered, citing nothing but a skills list. All three were rejected and the score dropped.",
+    liveUrl: "https://resume-fit-rosy.vercel.app",
+    githubUrl: "https://github.com/LuckyJaiswal30/ResumeFit",
     featured: true,
   },
   {
@@ -39,7 +40,7 @@ export const projects: Project[] = [
     year: "2026",
     stack: ["Next.js", "Tailwind CSS", "Motion", "Lenis"],
     status: "Completed",
-    githubUrl: "https://github.com/LuckyJaiswal30/lucky-jaiswal",
+    githubUrl: "https://github.com/LuckyJaiswal30/luckyjaiswal30.github.io",
     featured: true,
   },
 ];
