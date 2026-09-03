@@ -90,8 +90,6 @@ export default async function BlogPostPage({ params }: PageProps) {
       <ReadingProgress />
 
       <article className="scroll-mt-24 px-6 pb-24 pt-32 sm:px-10 lg:px-16 xl:px-20">
-        {/* Everything below shares one container, so the back link, the title
-            and the body all start on the same left edge. */}
         <div className={`mx-auto ${hasToc ? "max-w-6xl" : "max-w-3xl"}`}>
           <BackLink href="/blog" label="Blog" />
 
@@ -127,10 +125,6 @@ export default async function BlogPostPage({ params }: PageProps) {
             }
           >
             <div className="min-w-0 max-w-3xl">
-              {/* No `components` prop: the mdx-components file convention is
-                  wired into the loader, so every post picks the styling up
-                  automatically. Threading it through by hand would also mean
-                  calling a use-prefixed export from an async component. */}
               <Content />
             </div>
 

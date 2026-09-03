@@ -87,8 +87,6 @@ export default function BlogExplorer({
         ) : null}
       </div>
 
-      {/* Announces result counts to a screen reader as filters change, which is
-          otherwise a silent update for anyone not watching the list. */}
       <p aria-live="polite" className="sr-only">
         {list.length} {list.length === 1 ? "post" : "posts"} shown
       </p>

@@ -13,8 +13,6 @@ export default function HomePage() {
       tabIndex={-1}
       className="relative overflow-x-clip bg-[color:var(--background)]"
     >
-      {/* Ambient background wash. Fixed, so it stays put while the page moves
-          over it, and inert so it never intercepts a click. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-10"

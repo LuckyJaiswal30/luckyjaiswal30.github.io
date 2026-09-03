@@ -47,7 +47,7 @@ export default function Skills() {
             transition={transition}
             className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-[color:var(--foreground)] sm:text-4xl"
           >
-            Tools I actually know and use.
+            Tools I know and use.
           </motion.h2>
 
           <motion.div

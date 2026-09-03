@@ -62,9 +62,6 @@ export default function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          {/* Goes to the full list, matching what "Projects" does in the nav.
-              The same word doing two different things on one page — navigate
-              here, scroll there — is a small thing that reads as a bug. */}
           <Link
             href="/projects"
             className="rounded-full border px-6 py-3 text-sm uppercase tracking-[0.24em] text-[color:var(--foreground)] transition-all duration-300 hover:bg-[color:var(--surface-strong)] border-[color:var(--border)] bg-[color:var(--surface)]"

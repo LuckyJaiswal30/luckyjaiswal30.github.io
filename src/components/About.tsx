@@ -50,8 +50,8 @@ export default function About() {
               </p>
               <p>
                 I build things until I understand them, and I&apos;m honest
-                about the parts I still don&apos;t. This site started as one of
-                those and turned into something I keep coming back to.
+                about the parts I still don&apos;t. This site is the second
+                version of that idea, rebuilt from scratch on Next 16.
               </p>
             </div>
           </motion.div>

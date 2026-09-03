@@ -71,9 +71,16 @@ export default async function ProjectPage({ params }: PageProps) {
             {project.title}
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-[color:var(--muted)]">
-            {project.longDescription ?? project.description}
-          </p>
+          <div className="mt-6 space-y-5">
+            {(project.longDescription ?? [project.description]).map((paragraph) => (
+              <p
+                key={paragraph.slice(0, 40)}
+                className="text-lg leading-8 text-[color:var(--muted)]"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
 
           {project.highlight ? (
             <p className="mt-6 border-l-2 pl-5 text-lg leading-8 text-[color:var(--foreground)] border-[color:var(--foreground)]">
