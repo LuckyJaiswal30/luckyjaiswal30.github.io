@@ -34,7 +34,7 @@
   --capsule-bg: #ffffff;
   --capsule-fg: #000000;
   --muted: #a3a3a3;
-  --muted-soft: #7a7a7a;
+  --muted-soft: #888888;
   --border: rgba(255, 255, 255, 0.12);
   --surface: rgba(255, 255, 255, 0.04);
   --surface-strong: rgba(255, 255, 255, 0.08);
@@ -76,7 +76,7 @@
     outline-offset: 3px;
   }
 
-  #main-content:focus {
+  [tabindex="-1"]:focus {
     outline: none;
   }
 

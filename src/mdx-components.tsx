@@ -47,7 +47,7 @@ const components: MDXComponents = {
       {...props}
     />
   ),
-  a: ({ href = "", ...props }: ComponentPropsWithoutRef<"a">) => {
+  a: ({ href = "", children, ...props }: ComponentPropsWithoutRef<"a">) => {
     const className =
       "font-medium text-[color:var(--foreground)] underline decoration-[color:var(--border)] underline-offset-[3px] transition-opacity duration-300 hover:opacity-75";
 
@@ -59,11 +59,18 @@ const components: MDXComponents = {
           rel="noopener noreferrer"
           className={className}
           {...props}
-        />
+        >
+          {children}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
       );
     }
 
-    return <Link href={href} className={className} {...props} />;
+    return (
+      <Link href={href} className={className} {...props}>
+        {children}
+      </Link>
+    );
   },
   ul: (props) => (
     <ul

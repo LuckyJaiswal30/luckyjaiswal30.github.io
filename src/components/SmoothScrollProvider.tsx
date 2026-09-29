@@ -40,6 +40,15 @@ function resolveElement(target: string | HTMLElement): HTMLElement | null {
   return found instanceof HTMLElement ? found : null;
 }
 
+// Scrolling alone leaves keyboard focus on the link that was clicked, so the
+// next Tab starts from the top of the page instead of the section.
+function focusTarget(element: HTMLElement) {
+  if (!element.hasAttribute("tabindex")) {
+    element.setAttribute("tabindex", "-1");
+  }
+  element.focus({ preventScroll: true });
+}
+
 export default function SmoothScrollProvider({
   children,
 }: {
@@ -58,6 +67,7 @@ export default function SmoothScrollProvider({
 
       if (!lenis) {
         element.scrollIntoView({ behavior: "auto", block: "start" });
+        focusTarget(element);
         return;
       }
 
@@ -65,6 +75,7 @@ export default function SmoothScrollProvider({
         Number.parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
 
       lenis.scrollTo(element, { offset: -scrollMargin, duration: 1.2 });
+      focusTarget(element);
     },
 
     stop: () => lenisRef.current?.stop(),

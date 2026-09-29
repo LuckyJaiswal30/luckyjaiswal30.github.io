@@ -64,7 +64,7 @@ export default function BlogExplorer({
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search posts…"
             aria-label="Search posts"
-            className="h-11 w-full rounded-full border pl-11 pr-4 text-sm text-[color:var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[color:var(--muted-soft)] border-[color:var(--border)] bg-[color:var(--surface)]"
+            className="h-11 w-full rounded-full border pl-11 pr-4 text-sm text-[color:var(--foreground)] transition-colors duration-300 placeholder:text-[color:var(--muted-soft)] border-[color:var(--border)] bg-[color:var(--surface)]"
           />
         </div>
 
