@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
+import MobileTableOfContents from "@/components/blog/MobileTableOfContents";
 import ReadingProgress from "@/components/blog/ReadingProgress";
 import TableOfContents from "@/components/blog/TableOfContents";
 import Footer from "@/components/Footer";
@@ -106,7 +107,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               ) : null}
             </div>
 
-            <h1 className="mt-6 text-[2rem] font-semibold leading-[1.06] tracking-[-0.045em] text-[color:var(--foreground)] sm:text-[3.25rem]">
+            <h1 className="mt-6 text-balance text-[2rem] font-semibold leading-[1.06] tracking-[-0.045em] text-[color:var(--foreground)] sm:text-[3.25rem]">
               {post.meta.title}
             </h1>
 
@@ -116,6 +117,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           </header>
 
           <hr className="mt-14 border-[color:var(--border)]" />
+
+          {hasToc ? (
+            <div className="mt-10 max-w-3xl lg:hidden">
+              <MobileTableOfContents toc={post.toc} />
+            </div>
+          ) : null}
 
           <div
             className={
