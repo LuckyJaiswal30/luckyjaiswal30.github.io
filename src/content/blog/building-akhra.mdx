@@ -1,0 +1,103 @@
+export const metadata = {
+  title: "Building Akhra: The Honest Version",
+  description:
+    "Three to four weeks on a Smart India Hackathon prototype for Jharkhand: the problems that actually took the time, how we solved each one, and what it still can't do.",
+  date: "2026-09-29",
+  tags: ["Projects", "Engineering", "Reflection"],
+};
+
+Akhra is a platform where people in Jharkhand report local problems. A broken handpump, a drain that floods every monsoon, a school with no working toilet. A district officer checks each report and sends it either to the government department that can fix it, or to a university team when the problem needs more than a repair. The person who reported it follows every step with a reference code, and the report only closes when they say the fix is real.
+
+It's our team's prototype for Smart India Hackathon, problem statement 26043, set by the Government of Jharkhand. We cleared our college's internal round and uploaded our submission to the SIH portal. Now we're waiting for the next step, and I have no idea how it will go.
+
+It took about three to four weeks. There are six of us. I did the development, design and architecture. Chetan did the planning and problem research, Anshika tested it and hunted bugs, Kavya Tripathi gave ideas and feedback on the UI, and Shashank and Kavya Srivastava prepared the presentation. It's [live](https://akhra.imlucky.dev) and the [code is public](https://github.com/LuckyJaiswal30/Akhra).
+
+This post is the version I'd want to read about someone else's project. Not a pitch.
+
+## What we built, in short
+
+The problem statement asks for a platform where citizens raise problems and universities and industry help solve them. In practice most reports are ordinary, like a chapakal that stopped working, so after an officer checks a report they pick one of two tracks. Routine problems go to the government department with a 21-day deadline. Bigger ones become university projects with industry partners behind them. Either way, the person who reported it sees one timeline and confirms the fix.
+
+Under the hood it's a Next.js app on PostgreSQL, with Drizzle for queries, Clerk for sign-in, next-intl for Hindi and English, and Gemini and Groq for the AI parts. The code is split into a small monorepo: the web app, the database, the classifier and the shared vocabulary they all use. I designed and wrote it, and used an AI assistant for cleanup, optimisation and debugging.
+
+The rest of this post is the problems that actually took the time, and what we did about each one.
+
+## Problem 1: the AI can't be the reason a report fails
+
+Every report gets a category, like water or health, and a priority. Asking a language model is the obvious way to do that, and it works well, until it doesn't. Free tiers hit rate limits, time out and change their models. If classification depends on one provider, that provider being busy becomes a failed report, and someone reporting a broken handpump from a village doesn't care why.
+
+So classification became a chain. It tries Gemini, then Groq, then a small TF-IDF classifier trained on labelled, Jharkhand-style example reports that runs inside our own server with no network call at all. Each provider gets a 6-second timeout and a circuit breaker: after three failures in a row it's skipped for a minute, instead of making every reporter wait out the same timeout. The config warns if the chain doesn't end in the offline tier.
+
+The offline tier isn't smart. It matches words. But it always answers, the district officer can correct the category in their queue, and the dashboard shows which tier answered each report, so a quiet fallback doesn't stay quiet.
+
+The lesson I'd pass on: with an AI feature, design the fallback first, then the happy path.
+
+## Problem 2: the same complaint in three languages
+
+If twenty people report the same broken handpump, the officer shouldn't get twenty separate reports. But people write the way they talk. "Chapakal kharab hai", "हैंडपंप खराब है" and "handpump is broken" describe the same thing and share no words, so a normal text-similarity check scores them as completely different.
+
+The fix was to normalise before comparing. A lexicon maps the spellings people actually use, in Hindi typed in Latin letters, in Devanagari and in English, onto one concept: *chapakal*, *chapanal*, चापाकल and हैंडपंप all become "handpump", *kharab* and खराब become "broken". Then titles are compared on shared letter-groups and concepts, descriptions on word frequencies, weighted 60/40.
+
+I ran those three sentences through it. All three reduce to "handpump broken" and match each other at 85–87%. An unrelated streetlight report scores 0. A model then reviews the likely matches with one extra rule: the same problem in a different village is not a duplicate.
+
+One thing I learned the hard way: a duplicate check that fails and finds nothing looks exactly like a report with no duplicates. So when it runs without the model, it says so, instead of returning an empty list and letting everyone assume the best.
+
+## Problem 3: who is allowed to see what
+
+Akhra has citizens, district officers, state officials, department staff, university teams and industry partners. A district officer must only see their own district. Internal notes between officers must never reach the reporter. A university must only see documents from its own projects.
+
+The usual way is to check this in application code: every query remembers to filter by district or organisation. The problem is that one forgotten filter leaks data and nothing visibly breaks. So we pushed the rules down into PostgreSQL itself with row-level security. Every request runs inside a transaction that tells the database who is asking:
+
+```ts
+await tx.execute(sql`set local role ${sql.raw(APP_ROLE)}`);
+await tx.execute(sql`select set_config('akhra.user_id', ${ctx.userId ?? ''}, true)`);
+await tx.execute(sql`select set_config('akhra.role', ${ctx.role}, true)`);
+```
+
+The policies on each table then decide which rows exist for that person. A leak now needs two mistakes: a missing policy and a missing check in the code.
+
+Some work has no user behind it, like the nightly reminders, so there's an escape hatch that turns the policies off. An ESLint rule refuses to let pages, routes or components import it, so it can only be used inside module functions that do their own check. The policies also have their own test suite, run against a separate database.
+
+## Problem 4: acting on a report without an account
+
+Most people reporting a problem won't create an account, and they shouldn't have to. So every report gets a reference code like AKH-2026-000123, and anyone can look up its status.
+
+Confirming a fix or reopening a report is different. That's an action, and it shouldn't work for anyone who guesses a code. So it also asks for the last four digits of the mobile number given when reporting. Four digits is only 10,000 possibilities, so each report allows five attempts an hour. Correct attempts are refunded, so only wrong guesses count. A real reporter who confirms twice never locks themselves out, and someone guessing gets nowhere.
+
+## Problem 5: spam and private files, once it was public
+
+The moment anonymous reporting went live, the form was open to bots. We added layers instead of one big wall:
+
+- a hidden form field that people never see and bots fill in, which rejects the submission
+- a Cloudflare Turnstile check on anonymous reports
+- a limit of five reports per visitor per hour
+- an admin page where a super administrator can suspend an account, which signs it out everywhere and takes its unreviewed reports off the public pages and counts
+
+Attachments had their own problem. Photos and PDFs were first stored with public URLs, so anyone with a link could open them. They now live in private storage and are served only through a route that checks the viewer is allowed to see that report. The response is never cached and is sandboxed, so an uploaded file can't run as a web page.
+
+## Problem 6: a basic phone and a weak signal
+
+The person reporting a broken handpump is often on a basic phone with patchy signal, and may not be comfortable typing a long description in English. We designed the report form for that person rather than for us on a laptop.
+
+- **Nothing typed gets lost.** The form saves a draft on the phone every time you type. If the signal drops or the tab closes, it's there when you come back, with a button to discard it. It clears only after the report is actually sent.
+- **Offline is handled, not ignored.** When the phone loses signal, the send button waits and the page says so plainly: what you've typed is kept on this device, send it when you have signal again.
+- **You can speak instead of type.** A microphone button uses the browser's own speech-to-text, and the page says honestly that the browser may send the audio to its speech service to do that.
+- **Replies come back in your language.** Each report remembers whether it was filed in Hindi or English, and every update and email about it follows that choice. Error messages from the server follow the page language too, so a Hindi page never shows an English error.
+- **Plain words everywhere.** The first home page tagline was "The gathering ground for Jharkhand's challenges and the people solving them". It sounded nice and told you nothing. We rewrote every public page in plain language, and it became "Report a problem in your area and follow it until it is fixed."
+
+None of this is hard engineering. It's the difference between a form that works in a demo and one that works on a bus.
+
+## What it still can't do
+
+Akhra is a prototype, not an official government service. The figures on the live demo come from sample records we seeded, and the site says so. No real citizen has filed a real report through it yet.
+
+The interface is in Hindi and English only. The classifier understands reports in Santali, Kurukh, Mundari, Ho, Nagpuri and other languages of Jharkhand, but the pages don't speak them. There's no SMS either, because sending transactional SMS in India needs a registered company behind it. Reporters hear back in the app, by email and on the public tracker, which means the people most likely to report a broken handpump are the least likely to hear back.
+
+## What I'd take into the next project
+
+- Design the fallback before the feature, especially when the feature depends on someone else's API.
+- Put access rules in the database, not only in the code.
+- Think about abuse before launch, not after the first bot shows up.
+- Get people outside the team using it early. They find the problems you can't see from your own laptop.
+
+We're waiting to hear back from SIH now. I'll update this post when there's news.
