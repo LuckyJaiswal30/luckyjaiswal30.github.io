@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import { fadeInUp, sectionViewport, transition } from "@/lib/animations";
 import { contactEmail } from "@/lib/site";
 
@@ -10,19 +10,19 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="scroll-mt-24 px-6 pb-24 pt-24 sm:px-10 lg:px-16 xl:px-20"
+      className="scroll-mt-24 px-6 py-16 lg:py-20 sm:px-10 lg:px-16 xl:px-20"
     >
       <div className="mx-auto w-full max-w-6xl">
-        <motion.div
+        <m.div
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
           viewport={sectionViewport}
           transition={transition}
-          className="grid gap-12 border-t pt-12 lg:grid-cols-12 lg:items-start border-[color:var(--border)]"
+          className="grid gap-12 lg:grid-cols-12 lg:items-start"
         >
           <div className="lg:col-span-7">
-            <h2 className="max-w-4xl text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-[color:var(--foreground)] sm:text-5xl lg:text-6xl">
+            <h2 className="max-w-4xl text-balance text-4xl font-semibold leading-[0.98] tracking-[-0.05em] text-[color:var(--foreground)] sm:text-5xl lg:text-6xl">
               If you&apos;re hiring interns, or just want to talk, I&apos;m
               around.
             </h2>
@@ -47,7 +47,7 @@ export default function Contact() {
               Contact Me
             </a>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

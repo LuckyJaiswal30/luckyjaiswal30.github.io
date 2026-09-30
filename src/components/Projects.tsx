@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import Link from "next/link";
 import ProjectCard from "@/components/ProjectCard";
 import {
@@ -20,17 +20,17 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="scroll-mt-24 px-6 py-24 sm:px-10 lg:px-16 xl:px-20"
+      className="scroll-mt-24 px-6 py-16 lg:py-20 sm:px-10 lg:px-16 xl:px-20"
     >
       <div className="mx-auto max-w-6xl">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={sectionViewport}
-          className="grid gap-14"
+          className="grid gap-10"
         >
-          <motion.div
+          <m.div
             variants={fadeInUp}
             transition={transition}
             className="flex flex-wrap items-end justify-between gap-6"
@@ -53,7 +53,7 @@ export default function Projects() {
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0"
               />
             </Link>
-          </motion.div>
+          </m.div>
 
           <div
             className={`grid gap-6 ${
@@ -61,16 +61,16 @@ export default function Projects() {
             }`}
           >
             {featuredProjects.map((project) => (
-              <motion.div
+              <m.div
                 key={project.slug}
                 variants={fadeInUp}
                 transition={transition}
               >
                 <ProjectCard project={project} />
-              </motion.div>
+              </m.div>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

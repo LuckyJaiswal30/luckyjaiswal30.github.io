@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import Link from "next/link";
 import type { MouseEvent } from "react";
 import { useSmoothScroll } from "@/components/SmoothScrollProvider";
-import { fadeInUp, transition } from "@/lib/animations";
+import { transition } from "@/lib/animations";
 
 export default function Hero() {
   const { scrollTo } = useSmoothScroll();
@@ -22,14 +22,10 @@ export default function Hero() {
       id="home"
       className="relative scroll-mt-24 px-6 pb-20 pt-32 sm:px-10 lg:px-16 xl:px-20"
     >
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={transition}
-        className="mx-auto flex min-h-[calc(100vh-9rem)] max-w-3xl flex-col items-center justify-center text-center"
-      >
-        <motion.p
+      {/* The name and intro render visible from the first paint; fading them
+          in held back the largest paint until the JavaScript had loaded. */}
+      <div className="mx-auto flex min-h-[calc(100svh-9rem)] max-w-3xl flex-col items-center justify-center text-center">
+        <m.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...transition, delay: 0.08 }}
@@ -46,9 +42,9 @@ export default function Hero() {
             />
           </span>
           Open to internships
-        </motion.p>
+        </m.p>
 
-        <h1 className="text-4xl font-semibold leading-[1.02] tracking-[-0.045em] text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
+        <h1 className="text-balance text-4xl font-semibold leading-[1.02] tracking-[-0.045em] text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
           Hey, I&apos;m Lucky Jaiswal.
         </h1>
 
@@ -76,7 +72,7 @@ export default function Hero() {
             Contact
           </a>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

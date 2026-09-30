@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import Link from "next/link";
 import PostRow from "@/components/blog/PostRow";
 import {
@@ -14,14 +14,14 @@ import type { Post } from "@/lib/blog-utils";
 
 export default function BlogPreviewClient({ posts }: { posts: Post[] }) {
   return (
-    <motion.div
+    <m.div
       variants={staggerContainer}
       initial="hidden"
       whileInView="visible"
       viewport={sectionViewport}
       className="grid gap-10"
     >
-      <motion.div
+      <m.div
         variants={fadeInUp}
         transition={transition}
         className="flex flex-wrap items-end justify-between gap-6"
@@ -44,9 +44,9 @@ export default function BlogPreviewClient({ posts }: { posts: Post[] }) {
             className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:group-hover:translate-x-0"
           />
         </Link>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         variants={fadeInUp}
         transition={transition}
         className="border-b border-[color:var(--border)]"
@@ -54,7 +54,7 @@ export default function BlogPreviewClient({ posts }: { posts: Post[] }) {
         {posts.map((post) => (
           <PostRow key={post.slug} post={post} variant="compact" />
         ))}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

@@ -21,6 +21,6 @@ export const staggerContainer: Variants = {
 };
 
 export const sectionViewport = {
-  once: false,
+  once: true,
   amount: 0.2,
 } as const;

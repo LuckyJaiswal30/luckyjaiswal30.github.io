@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import {
   fadeInUp,
   sectionViewport,
@@ -16,6 +16,7 @@ const skills = [
   "Tailwind CSS",
   "Node.js",
   "MongoDB",
+  "PostgreSQL",
   "Git",
   "Python",
 ];
@@ -24,33 +25,33 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="scroll-mt-24 px-6 py-16 sm:px-10 lg:px-16 xl:px-20"
+      className="scroll-mt-24 px-6 py-16 lg:py-20 sm:px-10 lg:px-16 xl:px-20"
     >
       <div className="mx-auto w-full max-w-6xl">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={sectionViewport}
           className="mx-auto flex max-w-4xl flex-col items-center text-center"
         >
-          <motion.p
+          <m.p
             variants={fadeInUp}
             transition={transition}
             className="text-sm uppercase tracking-[0.34em] text-[color:var(--muted)]"
           >
             Skills
-          </motion.p>
+          </m.p>
 
-          <motion.h2
+          <m.h2
             variants={fadeInUp}
             transition={transition}
             className="mt-4 max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-[color:var(--foreground)] sm:text-4xl"
           >
             Tools I know and use.
-          </motion.h2>
+          </m.h2>
 
-          <motion.div
+          <m.div
             variants={fadeInUp}
             transition={transition}
             className="mt-10 flex w-full max-w-[35rem] flex-wrap justify-center gap-2.5"
@@ -63,8 +64,8 @@ export default function Skills() {
                 {skill}
               </span>
             ))}
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
     </section>
   );

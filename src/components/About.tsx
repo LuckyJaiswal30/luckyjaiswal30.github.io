@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import * as m from "motion/react-m";
 import {
   fadeInUp,
   sectionViewport,
@@ -12,17 +12,17 @@ export default function About() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 px-6 py-24 sm:px-10 lg:px-16 xl:px-20"
+      className="scroll-mt-24 px-6 py-16 lg:py-20 sm:px-10 lg:px-16 xl:px-20"
     >
       <div className="mx-auto max-w-6xl">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={sectionViewport}
           className="grid gap-10 lg:grid-cols-12"
         >
-          <motion.div
+          <m.div
             variants={fadeInUp}
             transition={transition}
             className="lg:col-span-4"
@@ -30,12 +30,12 @@ export default function About() {
             <p className="text-sm uppercase tracking-[0.34em] text-[color:var(--muted)]">
               About
             </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[color:var(--foreground)] sm:text-4xl">
+            <h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-0.04em] text-[color:var(--foreground)] sm:text-4xl">
               Trying to actually understand the things I build.
             </h2>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             variants={fadeInUp}
             transition={transition}
             className="lg:col-span-8"
@@ -54,8 +54,8 @@ export default function About() {
                 version of that idea, rebuilt from scratch on Next 16.
               </p>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
     </section>
   );

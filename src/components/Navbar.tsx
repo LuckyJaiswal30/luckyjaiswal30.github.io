@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import * as m from "motion/react-m";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
@@ -52,6 +53,9 @@ export default function Navbar() {
   const isHome = pathname === "/";
 
   const drawerRef = useRef<HTMLElement | null>(null);
+  // Set when a link closes the drawer, so focus follows the link rather than
+  // snapping back to the menu button.
+  const closedByNavigationRef = useRef(false);
 
   const activeHref = isHome ? scrolledHref : navHrefForPath(pathname);
 
@@ -180,7 +184,10 @@ export default function Navbar() {
       document.body.style.overflow = previousOverflow;
       start();
       document.removeEventListener("keydown", onKeyDown);
-      returnFocusTo?.focus();
+      if (!closedByNavigationRef.current) {
+        returnFocusTo?.focus();
+      }
+      closedByNavigationRef.current = false;
     };
   }, [isOpen, stop, start]);
 
@@ -191,6 +198,10 @@ export default function Navbar() {
     event: MouseEvent<HTMLAnchorElement>,
     item: NavItem,
   ) => {
+    if (isOpen) {
+      closedByNavigationRef.current = true;
+    }
+
     if (isAnchor(item) && isHome) {
       event.preventDefault();
       setScrolledHref(item.href);
@@ -265,7 +276,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen ? (
           <>
-            <motion.div
+            <m.div
               aria-hidden="true"
               className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
               initial={{ opacity: 0 }}
@@ -273,7 +284,7 @@ export default function Navbar() {
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
             />
-            <motion.aside
+            <m.aside
               ref={drawerRef}
               id="mobile-navigation"
               role="dialog"
@@ -298,7 +309,7 @@ export default function Navbar() {
 
               <nav aria-label="Primary" className="flex flex-col gap-2">
                 {navigation.map((item) => (
-                  <motion.a
+                  <m.a
                     key={item.href}
                     href={hrefFor(item)}
                     whileTap={{ scale: 0.97 }}
@@ -313,10 +324,10 @@ export default function Navbar() {
                     }`}
                   >
                     {item.label}
-                  </motion.a>
+                  </m.a>
                 ))}
               </nav>
-            </motion.aside>
+            </m.aside>
           </>
         ) : null}
       </AnimatePresence>
