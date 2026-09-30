@@ -8,12 +8,48 @@ export type Project = {
   status: "Completed" | "In Progress";
   highlight?: string;
   image?: string;
+  imageSquare?: string;
+  imageAlt?: string;
   liveUrl?: string;
   githubUrl?: string;
+  writeUp?: string;
   featured?: boolean;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "akhra",
+    title: "Akhra",
+    description:
+      "People in Jharkhand report local problems in Hindi, English or Hinglish. A district officer sends each one to the department that can fix it, or to a university team when it needs more than a repair, and the report only closes when the person who filed it says the fix is real.",
+    longDescription: [
+      "Akhra is our Smart India Hackathon prototype for problem statement 26043, set by the Government of Jharkhand. The brief asks for a platform that crowdsources societal problems and routes them to universities and industry. We cleared the college's internal round and submitted to the SIH portal. I did the development, design and architecture; five teammates handled research, testing, UI feedback and the presentation.",
+      "The first thing I changed was the brief's own shape. Most of what people actually report is ordinary: a chapakal that stopped working, a blocked drain. Routing that to a research team is theatre. So an officer chooses one of two tracks. Routine problems go to the line department with a 21-day deadline. Problems bigger than one repair become university projects with proposals, milestones and field tests, with industry partners offering funding, mentoring or pilots. Either way the reporter follows one timeline, confirms the fix, and can reopen it within 30 days.",
+      "A report can't be allowed to fail because an AI service is busy, so classification is a chain: Gemini, then Groq, then a TF-IDF model that runs on our own server. Duplicate detection had the same problem across languages. \"Chapakal kharab hai\" and \"handpump broken\" share no words, so a small lexicon folds Hindi, Devanagari and Hinglish spellings onto the same concepts before comparing, and the dashboard shows which tier actually answered.",
+      "District officers see only their own district's reports. That's enforced by PostgreSQL row-level security as well as the application, so a leak needs two mistakes rather than one forgotten where-clause. We also had a rule: nothing that needs money or a registered company. SMS was removed entirely rather than stubbed, because Indian transactional SMS requires a DLT-registered legal entity, and a feature that can't be shown working shouldn't pretend to exist.",
+    ],
+    year: "2026",
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "PostgreSQL",
+      "Drizzle",
+      "Clerk",
+      "Gemini",
+      "next-intl",
+    ],
+    status: "Completed",
+    highlight:
+      "A broken chapakal goes to the water department with a 21-day deadline. A contaminated water source becomes a university project with industry behind it. Same report form, two very different journeys.",
+    image: "/projects/akhra-cover.png",
+    imageSquare: "/projects/akhra-cover-square.png",
+    imageAlt:
+      "Akhra, the meeting ground for all of Jharkhand: the report form in Hindi on a phone, the tracker for a soil testing report at stage 7 of 8, and the district map of where reports come from.",
+    liveUrl: "https://akhra.imlucky.dev",
+    githubUrl: "https://github.com/LuckyJaiswal30/Akhra",
+    writeUp: "/blog/building-akhra",
+    featured: true,
+  },
   {
     slug: "resumefit",
     title: "ResumeFit",
@@ -30,12 +66,16 @@ export const projects: Project[] = [
     status: "Completed",
     highlight:
       "Every quote is checked against your resume before it is shown, so a claim the model invented never reaches the page. What is missing and what is unproven are reported separately.",
+    image: "/projects/resumefit-cover.png",
+    imageSquare: "/projects/resumefit-cover-square.png",
+    imageAlt:
+      "ResumeFit, know what your resume proves: an overall fit of 69 out of 100, a React match backed by a quoted resume line, Next.js listed but never shown, and a skill the resume words differently from the posting.",
     liveUrl: "https://resume-fit-rosy.vercel.app",
     githubUrl: "https://github.com/LuckyJaiswal30/ResumeFit",
     featured: true,
   },
   {
-    slug: "this-portfolio",
+    slug: "portfolio",
     title: "This Portfolio",
     description:
       "I built this to learn the Next.js App Router properly: routing, theming, animation, deployment. The blog runs on a remark plugin that stamps heading anchors and builds its table of contents in one pass.",
@@ -50,8 +90,11 @@ export const projects: Project[] = [
     status: "Completed",
     highlight:
       "Every page is generated at build time, link previews included, drawn from the same content that renders the pages. Posts are validated as the site builds, so a broken one fails the build instead of shipping.",
+    image: "/projects/portfolio-cover.png",
+    imageSquare: "/projects/portfolio-cover-square.png",
+    imageAlt:
+      "Portfolio, things I've built and what building them taught me: a blog post, the homepage in light mode and the blog index, stacked in layers.",
     githubUrl: "https://github.com/LuckyJaiswal30/luckyjaiswal30.github.io",
-    featured: true,
   },
 ];
 

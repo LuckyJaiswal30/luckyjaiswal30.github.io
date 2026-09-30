@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
 import Footer from "@/components/Footer";
+import ProjectImage, { projectImageFrame } from "@/components/ProjectImage";
 import { projects } from "@/lib/projects";
 import { siteUrl } from "@/lib/site";
 
@@ -61,7 +63,18 @@ export default async function ProjectPage({ params }: PageProps) {
         <div className="mx-auto max-w-3xl">
           <BackLink href="/projects" label="All projects" />
 
-          <p className="mt-8 flex flex-wrap items-center gap-x-2 text-xs uppercase tracking-[0.26em] text-[color:var(--muted-soft)]">
+          <div
+            className={`relative mt-8 overflow-hidden rounded-3xl border border-[color:var(--border)] ${projectImageFrame(project)}`}
+          >
+            <ProjectImage
+              project={project}
+              alt={project.imageAlt}
+              priority
+              sizes="(min-width: 768px) 768px, 100vw"
+            />
+          </div>
+
+          <p className="mt-10 flex flex-wrap items-center gap-x-2 text-xs uppercase tracking-[0.26em] text-[color:var(--muted-soft)]">
             {project.status}
             <span aria-hidden="true">·</span>
             {project.year}
@@ -92,8 +105,8 @@ export default async function ProjectPage({ params }: PageProps) {
             {project.stack.join(" / ")}
           </p>
 
-          {project.liveUrl || project.githubUrl ? (
-            <div className="mt-8 flex items-center gap-6 text-sm">
+          {project.liveUrl || project.githubUrl || project.writeUp ? (
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
               {project.liveUrl ? (
                 <a
                   href={project.liveUrl}
@@ -102,6 +115,7 @@ export default async function ProjectPage({ params }: PageProps) {
                   className="border-b border-transparent pb-1 text-[color:var(--foreground)] transition-all duration-300 hover:border-current"
                 >
                   View Project
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               ) : null}
               {project.githubUrl ? (
@@ -112,7 +126,16 @@ export default async function ProjectPage({ params }: PageProps) {
                   className="border-b border-transparent pb-1 text-[color:var(--muted)] transition-all duration-300 hover:border-current hover:text-[color:var(--foreground)]"
                 >
                   GitHub
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
+              ) : null}
+              {project.writeUp ? (
+                <Link
+                  href={project.writeUp}
+                  className="border-b border-transparent pb-1 text-[color:var(--muted)] transition-all duration-300 hover:border-current hover:text-[color:var(--foreground)]"
+                >
+                  Read the write-up
+                </Link>
               ) : null}
             </div>
           ) : null}

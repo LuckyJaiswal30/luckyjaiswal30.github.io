@@ -73,7 +73,7 @@ Frontmatter is validated at build time. A missing field, a date that isn't a rea
 
 Add an entry to the `projects` array in `src/lib/projects.ts`. Setting `featured: true` puts it on the homepage. Every project gets a page at `/projects/[slug]` either way.
 
-Screenshots go in `public/projects/`, named after the slug. Omit `image` and the card uses generated cover art instead. A project marked `status: "In Progress"` always shows the "Coming soon" cover, so only give it an image once it's finished.
+Covers go in `public/projects/`, named after the slug: a 2000×1250 `image` for wide screens and an optional 1200×1200 `imageSquare` that phones get instead. Omit `image` and the card shows a plain dot-grid placeholder. A project marked `status: "In Progress"` always shows the "Coming soon" cover, so only give it an image once it's finished.
 
 ## Environment variables
 

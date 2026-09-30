@@ -1,27 +1,8 @@
 import { ArrowRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { GitHubIcon } from "@/components/BrandIcons";
+import ProjectImage, { projectImageFrame } from "@/components/ProjectImage";
 import type { Project } from "@/lib/projects";
-
-function hueFromTitle(title: string): number {
-  const sum = [...title].reduce((total, char) => total + char.charCodeAt(0), 0);
-  return sum % 360 || 200;
-}
-
-function CoverTint({ title }: { title: string }) {
-  const hue = hueFromTitle(title);
-
-  return (
-    <div
-      className="absolute inset-0"
-      style={{
-        background: `radial-gradient(120% 120% at 20% 10%, hsl(${hue} 70% 45% / 0.35), transparent 60%), radial-gradient(120% 120% at 90% 90%, hsl(${
-          (hue + 60) % 360
-        } 70% 50% / 0.25), transparent 55%)`,
-      }}
-    />
-  );
-}
 
 function ComingSoonCover() {
   return (
@@ -46,32 +27,28 @@ export default function ProjectCard({
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border transition-colors duration-300 border-[color:var(--border)] bg-[color:var(--surface)] hover:border-[color:var(--muted-soft)] hover:bg-[color:var(--surface-strong)]">
-      <div className="relative flex aspect-[16/10] w-full flex-col justify-end overflow-hidden border-b border-[color:var(--border)]">
+      <div
+        className={`relative w-full overflow-hidden border-b border-[color:var(--border)] ${projectImageFrame(project)}`}
+      >
         {isInProgress ? (
           <ComingSoonCover />
-        ) : project.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={project.image}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
         ) : (
-          <CoverTint title={project.title} />
+          <ProjectImage
+            project={project}
+            sizes="(min-width: 1024px) 560px, (min-width: 640px) 50vw, 100vw"
+          />
         )}
-
-        <Heading
-          id={headingId}
-          className="relative p-6 text-2xl font-semibold leading-tight tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[1.7rem]"
-        >
-          {project.title}
-        </Heading>
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <p className="flex flex-wrap items-center gap-x-2 text-xs uppercase tracking-[0.22em] text-[color:var(--muted-soft)]">
+        <Heading
+          id={headingId}
+          className="text-2xl font-semibold leading-tight tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[1.7rem]"
+        >
+          {project.title}
+        </Heading>
+
+        <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs uppercase tracking-[0.22em] text-[color:var(--muted-soft)]">
           {project.status}
           <span aria-hidden="true">·</span>
           {project.year}

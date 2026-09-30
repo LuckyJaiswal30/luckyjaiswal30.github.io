@@ -1,4 +1,7 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { getPostSlugs } from "@/lib/blog";
 import { featuredProjects, projects } from "@/lib/projects";
 
 describe("projects config", () => {
@@ -40,6 +43,7 @@ describe("projects config", () => {
       for (const [field, url] of [
         ["githubUrl", p.githubUrl],
         ["liveUrl", p.liveUrl],
+        ["writeUp", p.writeUp],
       ] as const) {
         if (!url) continue;
         expect(
@@ -77,6 +81,35 @@ describe("projects config", () => {
         p.image,
         `${p.slug}: an in-progress card renders "Coming soon", not the image`,
       ).toBeUndefined();
+    }
+  });
+
+  it("ships every cover image it references", () => {
+    for (const p of projects) {
+      for (const [field, src] of [
+        ["image", p.image],
+        ["imageSquare", p.imageSquare],
+      ] as const) {
+        if (!src) continue;
+        expect(
+          existsSync(path.join(process.cwd(), "public", src)),
+          `${p.slug}: ${field} ${src} is not in public/`,
+        ).toBe(true);
+      }
+      if (p.imageSquare) {
+        expect(p.image, `${p.slug}: a square cover needs a wide one too`).toBeDefined();
+      }
+    }
+  });
+
+  it("points writeUp at a blog post that exists", () => {
+    const slugs = getPostSlugs();
+    for (const p of projects) {
+      if (!p.writeUp) continue;
+      expect(p.writeUp, `${p.slug}: writeUp must be /blog/<slug>`).toMatch(/^\/blog\//);
+      expect(slugs, `${p.slug}: no post at ${p.writeUp}`).toContain(
+        p.writeUp.slice("/blog/".length),
+      );
     }
   });
 
